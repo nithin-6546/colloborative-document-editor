@@ -18,7 +18,7 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
-  "https://colloborative-document-editor.vercel.app",
+  "https://colloborative-document-editor.vercel.app/",
   "https://colloborative-document-editor-351o7xij9-nithin-6546s-projects.vercel.app"
 ];
 
