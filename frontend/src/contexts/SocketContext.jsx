@@ -18,7 +18,8 @@ export const SocketProvider = ({ children }) => {
     }
 
     // Connect to Socket.IO backend
-    const newSocket = io("http://localhost:5000", {
+    const socketUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+    const newSocket = io(socketUrl, {
       withCredentials: true, // Sends the httpOnly token cookie
       autoConnect: true,
     });
