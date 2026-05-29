@@ -16,29 +16,27 @@ config();
 const app = express();
 
 const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:5174",
-  "https://colloborative-document-editor.vercel.app/",
-  "https://colloborative-document-editor-351o7xij9-nithin-6546s-projects.vercel.app"
+  "https://colloborative-document-editor.vercel.app",
+  "http://localhost:5173"
 ];
 
 /* ---------------- MIDDLEWARES ---------------- */
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      return callback(new Error("Not allowed by CORS"));
-    },
+    origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
 
-app.options("*", cors());
+// Safe preflight OPTIONS request interceptor for Express 5 compatibility
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 app.use(express.json());
 app.use(cookieParser());
@@ -195,7 +193,7 @@ connectDb();
 
 /* ---------------- ERROR HANDLING ---------------- */
 app.use((req, res) => {
-  res.json({ message: `${req.url} is Invalid path` });
+  res.status(404).json({ message: "Route not found" });
 });
 
 app.use((err, req, res, next) => {
