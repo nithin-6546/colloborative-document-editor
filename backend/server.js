@@ -1,6 +1,6 @@
 import express from "express";
-import { userRoute } from "./APIs/UserAPI.js";
-import { documentRoute } from "./APIs/documentAPI.js";
+import { userRoute } from "./routes/userRoutes.js";
+import { documentRoute } from "./routes/documentRoutes.js";
 import { connect } from "mongoose";
 import { config } from "dotenv";
 import cookieParser from "cookie-parser";
@@ -8,7 +8,7 @@ import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
 import { DocumentModel } from "./models/documentModel.js";
-import { socketAuth } from "./middlewares/socketAuth.js";
+import { socketAuth } from "./middleware/socketAuth.js";
 import * as Y from "yjs";
 
 config();

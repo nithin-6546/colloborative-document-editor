@@ -1,6 +1,6 @@
 import express from "express";
 import { register, authenticate } from "../services/authService.js";
-import { verifyToken } from "../middlewares/verifyToken.js";
+import { verifyToken } from "../middleware/verifyToken.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { UserTypeModel } from "../models/userModel.js";

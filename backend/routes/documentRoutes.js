@@ -1,5 +1,5 @@
 import express from "express";
-import { verifyToken } from "../middlewares/verifyToken.js";
+import { verifyToken } from "../middleware/verifyToken.js";
 import { createDocument } from "../services/documentService.js";
 import { UserTypeModel } from "../models/userModel.js";
 import {DocumentModel} from "../models/documentModel.js";
