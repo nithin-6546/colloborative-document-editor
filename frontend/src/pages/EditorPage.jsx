@@ -382,21 +382,34 @@ export const EditorPage = () => {
     }
   };
 
-  /* ---------------- MOCK COMMENTS SUBMISSION ---------------- */
-  const handleAddComment = (e) => {
+  /* ---------------- COMMENTS SUBMISSION ---------------- */
+  const handleAddComment = async (e) => {
     e.preventDefault();
     if (!newCommentText.trim()) return;
 
-    setComments((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        author: `${user?.firstName || "Me"} ${user?.lastName || ""}`,
+    try {
+      const res = await api.post("/api/comments/add", {
+        documentId: id,
         text: newCommentText,
-        date: "Just now"
+      });
+
+      if (res.data && res.data.success) {
+        const savedComment = res.data.comment;
+        setComments((prev) => [...prev, savedComment]);
+
+        if (socket) {
+          socket.emit("new-comment", {
+            documentId: id,
+            comment: savedComment,
+          });
+        }
+
+        setNewCommentText("");
       }
-    ]);
-    setNewCommentText("");
+    } catch (err) {
+      console.error("Failed to add comment:", err);
+      alert("Failed to post comment. " + (err.response?.data?.message || ""));
+    }
   };
 
   /* ---------------- NOTION-STYLE PALETTE SLASH MENU ---------------- */
@@ -563,6 +576,16 @@ export const EditorPage = () => {
           setDocData(doc);
           setTitle(doc.title || "Untitled Document");
 
+          // Fetch persistent comments
+          try {
+            const commentsRes = await api.get(`/api/comments/${id}`);
+            if (active && commentsRes.data.success) {
+              setComments(commentsRes.data.comments);
+            }
+          } catch (commentErr) {
+            console.error("Error fetching comments:", commentErr);
+          }
+
           /* ---------------- ACCESS & PERMISSIONS ---------------- */
           const ownerId = (doc.owner?._id || doc.owner || "").toString();
           const currentUserId = (user?._id || user?.userId || "").toString();
@@ -695,12 +718,18 @@ export const EditorPage = () => {
       }));
     });
 
+    /* ---------------- RECEIVE COMMENTS ---------------- */
+    socket.on("receive-comment", (newComment) => {
+      setComments((prev) => [...prev, newComment]);
+    });
+
     return () => {
       socket.off("receive-changes");
       socket.off("title-updated");
       socket.off("presence-update");
       socket.off("user-typing");
       socket.off("cursor-moved");
+      socket.off("receive-comment");
     };
   }, [socket, editor, id, user?._id, versionPreview]);
 
@@ -1608,15 +1637,28 @@ export const EditorPage = () => {
                   </form>
 
                   <div className="space-y-2.5 mt-4">
-                    {comments.map((c) => (
-                      <div key={c.id} className="p-3 border border-slate-100 rounded-xl bg-slate-50/50 space-y-2 text-left">
-                        <div className="flex justify-between items-center select-none">
-                          <span className="text-[10px] font-bold text-slate-700">{c.author}</span>
-                          <span className="text-[9px] text-slate-400">{c.date}</span>
+                    {comments.map((c) => {
+                      const commentAuthor = c.username || c.author || "Unknown";
+                      const commentDate = c.createdAt
+                        ? new Date(c.createdAt).toLocaleString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                        : (c.date || "Just now");
+                      const commentId = c._id || c.id;
+
+                      return (
+                        <div key={commentId} className="p-3 border border-slate-100 rounded-xl bg-slate-50/50 space-y-2 text-left">
+                          <div className="flex justify-between items-center select-none">
+                            <span className="text-[10px] font-bold text-slate-700">{commentAuthor}</span>
+                            <span className="text-[9px] text-slate-400">{commentDate}</span>
+                          </div>
+                          <p className="text-[11px] text-slate-500 leading-normal font-medium">{c.text}</p>
                         </div>
-                        <p className="text-[11px] text-slate-500 leading-normal font-medium">{c.text}</p>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               )}

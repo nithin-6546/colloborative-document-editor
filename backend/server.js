@@ -1,6 +1,7 @@
 import express from "express";
 import { userRoute } from "./routes/userRoutes.js";
 import { documentRoute } from "./routes/documentRoutes.js";
+import { commentRoute } from "./routes/commentRoutes.js";
 import { connect } from "mongoose";
 import { config } from "dotenv";
 import cookieParser from "cookie-parser";
@@ -44,6 +45,7 @@ app.use(cookieParser());
 /* ---------------- ROUTES ---------------- */
 app.use("/api/users", userRoute);
 app.use("/api/documents", documentRoute);
+app.use("/api/comments", commentRoute);
 
 /* ---------------- DEFAULT ROUTE ---------------- */
 app.get("/", (req, res) => {
@@ -121,6 +123,10 @@ io.on("connection", (socket) => {
   /* ---------------- REAL-TIME SYNC ---------------- */
   socket.on("send-changes", (data) => {
     socket.to(data.documentId).emit("receive-changes", data.content);
+  });
+
+  socket.on("new-comment", ({ documentId, comment }) => {
+    socket.to(documentId).emit("receive-comment", comment);
   });
 
   socket.on("title-update", ({ documentId, title }) => {
