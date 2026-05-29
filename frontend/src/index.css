@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+  background-color: #f8f9fa; /* Google Docs gray background */
+  color: #1a1a1a;
+  overflow-x: hidden;
+}
+
+/* TipTap Editor Styles */
+.ProseMirror {
+  outline: none;
+  min-height: 100%;
+  padding: 2.5rem 3rem;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.ProseMirror p {
+  margin-bottom: 1em;
+}
+
+.ProseMirror h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #111827;
+}
+
+.ProseMirror h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+.ProseMirror h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: #374151;
+}
+
+.ProseMirror ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.ProseMirror ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.ProseMirror blockquote {
+  border-left: 4px solid #3b82f6;
+  padding-left: 1rem;
+  font-style: italic;
+  color: #4b5563;
+  margin: 1rem 0;
+}
+
+.ProseMirror pre {
+  background: #f3f4f6;
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
+  font-family: monospace;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.ProseMirror code {
+  background: #f3f4f6;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+/* Custom scrollbar for premium look */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Glassmorphism utility classes */
+.glass {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* Print optimization styles for PDF saving */
+@media print {
+  body, html, #root {
+    background-color: #ffffff !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+  header, .toolbar-container, .sidebar-container, button, .no-print, .typing-container {
+    display: none !important;
+  }
+  .editor-workspace-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    background-color: #ffffff !important;
+    overflow: visible !important;
+    display: block !important;
+    height: auto !important;
+  }
+  .a4-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    min-height: auto !important;
+  }
+}
