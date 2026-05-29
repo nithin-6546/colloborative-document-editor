@@ -34,6 +34,9 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await api.post("/api/users/login", { email, password });
       if (res.data && res.data.success) {
+        if (res.data.token) {
+          localStorage.setItem("token", res.data.token);
+        }
         const loginUser = res.data.user;
         const unifiedUser = {
           ...loginUser,
@@ -78,11 +81,15 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       console.error("Logout API error:", err);
     } finally {
+      localStorage.removeItem("token");
       setUser(null);
     }
   };
 
-  const updateUser = (updatedUser) => {
+  const updateUser = (updatedUser, token) => {
+    if (token) {
+      localStorage.setItem("token", token);
+    }
     setUser({
       ...updatedUser,
       _id: updatedUser._id || updatedUser.userId,

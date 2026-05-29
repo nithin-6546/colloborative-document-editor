@@ -5,13 +5,13 @@ config();
 
 export const verifyToken = (req, res, next) => {
   try {
-    // Read token from cookie
-    const token = req.cookies?.token;
+    // Read token from Authorization header or cookie
+    const token = req.headers.authorization?.split(" ")[1] || req.cookies?.token;
 
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized. Please login",
+        message: "No token provided",
       });
     }
 

@@ -209,7 +209,7 @@ export const DashboardPage = () => {
       });
 
       if (res.data && res.data.success) {
-        updateUser(res.data.user);
+        updateUser(res.data.user, res.data.token);
         setProfileSuccess("Profile updated successfully!");
         setCurrentPassword("");
         setNewPassword("");
